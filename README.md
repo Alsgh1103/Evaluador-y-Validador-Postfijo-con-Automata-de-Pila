@@ -8,8 +8,7 @@ El sistema procesa una cadena de tokens (operandos y operadores `+`, `-`, `*`, `
 ## Contexto Académico
 
 Este proyecto fue desarrollado como **trabajo final** para el curso de **Teoría de la Computación** en la  
-**Facultad de Ingeniería de Sistemas e Informática** de la  
-**Universidad Nacional Mayor de San Marcos (UNMSM)**.
+**Facultad de Ingeniería de Sistemas e Informática** de la  **Universidad Nacional Mayor de San Marcos (UNMSM)**.
 
 ---
 
