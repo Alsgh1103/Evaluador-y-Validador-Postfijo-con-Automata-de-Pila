@@ -17,17 +17,6 @@ El evaluador se basa en un **Autómata de Pila**, definido mediante la séptupla
 
 **M = (Q, Σ, Γ, δ, q₀, Z₀, F)**
 
-### Definiciones de la Séptupla
-
-| Símbolo | Nombre | Descripción |
-|--------|--------|-------------|
-| **Q = { q₁ }** | Conjunto de estados | El autómata trabaja con un único estado |
-| **Σ = { V, +, -, *, / }** | Alfabeto de entrada | `V` representa cualquier **operando numérico** |
-| **Γ = { X, Z₀ }** | Alfabeto de la pila | `X` representa un operando almacenado en la pila |
-| **q₀ = q₁** | Estado inicial | El autómata comienza en `q₁` |
-| **Z₀** | Símbolo inicial de pila | Marca la base de la pila |
-| **F = ∅** | Conjunto de aceptación | La aceptación se da cuando la **pila queda vacía** |
-
 ---
 
 ### Interpretación del Proceso
