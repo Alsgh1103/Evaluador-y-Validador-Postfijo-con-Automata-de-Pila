@@ -11,12 +11,6 @@ Este proyecto fue desarrollado como **trabajo final** para el curso de **Teoría
 **Facultad de Ingeniería de Sistemas e Informática** de la  
 **Universidad Nacional Mayor de San Marcos (UNMSM)**.
 
-## Modelo Matemático del Autómata de Pila (AP)
-
-El evaluador se basa en un **Autómata de Pila**, definido mediante la séptupla:
-
-**M = (Q, Σ, Γ, δ, q₀, Z₀, F)**
-
 ---
 
 ### Interpretación del Proceso
