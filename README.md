@@ -16,7 +16,7 @@ Este proyecto fue desarrollado como **trabajo final** para el curso de **Teoría
 ### Interpretación del Proceso
 Objetivo: Calcular el resultado numérico de una expresión postfija (ej. 10 5 +).
 
-Proceso (token por token):
+- **Proceso (token por token):**
 
 - Si se lee un NÚMERO: Se apila (hace push) directamente en la pila.
 
@@ -28,10 +28,34 @@ Proceso (token por token):
 
 - Se apila (hace push) el resultado de esa operación de nuevo en la pila.
 
-Finalización:
+- **Finalización:**
 
-Si al terminar de leer la entrada queda exactamente un número en la pila → La expresión es VÁLIDA y ese es el resultado.
+- Si al terminar de leer la entrada queda exactamente un número en la pila → La expresión es VÁLIDA y ese es el resultado.
 
-Si la pila queda vacía o con más de un número → La expresión es INVÁLIDA (Error de sintaxis).
+- Si la pila queda vacía o con más de un número → La expresión es INVÁLIDA (Error de sintaxis).
 
-Si ocurre una división por cero → La expresión es INVÁLIDA (Error aritmético).
+- Si ocurre una división por cero → La expresión es INVÁLIDA (Error aritmético).
+
+---
+
+### Características
+
+- El programa en C simula el autómata de pila para ver si una expresión postfija está bien escrita y, si lo está, la halla.
+- Se crearon 4 funciones (Push,Pop,esOperador e imprimir_pila), las cuales son el motor de nuestro programa.
+- En la zona principal, se solicita todos los valores y operandos (+,-,/,*) y los coloca en orden:
+  - si tenemos un operando, llama a push y los coloca en la cima de la pila
+  - si tenemos un operador llama a pop y extrae los dos últimos operandos
+  - halla el valor encontrado y lo coloca con un push de nuevo sobre la cima de la pila.
+  - Al final si quedó solo un valor sobre la cima de la pila (el resultado de toda la operación), el procedimiento es correcto
+
+---
+
+### Herramientas Usadas
+
+- Lógica Principal fue desarrollado en lenguaje C
+- Modelo teórico utilizado, un autómata de pila
+
+---
+
+### Ejecución
+
