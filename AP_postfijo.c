@@ -62,7 +62,7 @@ int main() {
     char buffer_token[30];
 
     printf("--- EVALUADOR POSTFIJO (AUTOMATA DE PILA) ---\n");
-    printf("Ingrese su expresion (separada por espacios, 's' para terminar):\n");
+    printf("Ingrese su expresion (separada por espacios, ingrese 's' para terminar):\n");
 
     while (num_tokens < MAX_PILA) {
         
@@ -143,7 +143,7 @@ int main() {
     } else {
         if (tope == 0) {
             printf("ESTADO: EXPRESION ACEPTADA.\n");
-            printf("Resultado final: %f\n", pila[tope]);
+            printf("Resultado final: %.2f\n", pila[tope]);
         
         } else if (tope > 0) {
             printf("ESTADO: EXPRESION RECHAZADA (Error Sintactico).\n");
@@ -155,4 +155,5 @@ int main() {
     }
 
     return 0;
+
 }
