@@ -1,60 +1,97 @@
 # Evaluador y Validador Postfijo con Autómata de Pila (AP)
 
-Programa hecho en Lenguaje C, el cual implementa un **Autómata de Pila (AP)** para la **evaluación y validación de expresiones aritméticas en Notación Postfija**.
+Programa en lenguaje C que implementa un **Autómata de Pila (AP)** para la **evaluación y validación de expresiones aritméticas en notación postfija (RPN)**.  
 El sistema procesa una cadena de tokens (operandos y operadores `+`, `-`, `*`, `/`) y:
--  Determina si la expresión es **sintácticamente válida**.  
--  **Calcula el resultado numérico** de la expresión.
 
-## Contexto Académico
+- Determina si la expresión es **sintácticamente válida**.
+- **Calcula el resultado numérico** de la expresión si es correcta.
+
+---
+
+## Contexto académico
 
 Este proyecto fue desarrollado como **trabajo final** para el curso de **Teoría de la Computación** en la  
-**Facultad de Ingeniería de Sistemas e Informática** de la  **Universidad Nacional Mayor de San Marcos (UNMSM)**.
+**Facultad de Ingeniería de Sistemas e Informática** de la **Universidad Nacional Mayor de San Marcos (UNMSM)**.
 
 ---
 
-### Interpretación del Proceso
-Objetivo: Calcular el resultado numérico de una expresión postfija (ej. 10 5 +).
+## ¿Qué es la notación postfija (RPN)?
 
-- **Proceso (token por token):**
+En notación postfija los operadores van **después** de los operandos.  
+Por ejemplo:
 
-- Si se lee un NÚMERO: Se apila (hace push) directamente en la pila.
+- Infija: `3 + 4 * 2`  
+- Postfija: `3 4 2 * +`
 
-- Si se lee un OPERADOR (+, -, *, /):
-
-- Se sacan (hacen pop) los dos últimos números de la pila (Operando 2, luego Operando 1).
-
-- Se realiza la operación matemática (ej. Operando1 + Operando2).
-
-- Se apila (hace push) el resultado de esa operación de nuevo en la pila.
-
-- **Finalización:**
-
-- Si al terminar de leer la entrada queda exactamente un número en la pila → La expresión es VÁLIDA y ese es el resultado.
-
-- Si la pila queda vacía o con más de un número → La expresión es INVÁLIDA (Error de sintaxis).
-
-- Si ocurre una división por cero → La expresión es INVÁLIDA (Error aritmético).
+Esta forma no necesita paréntesis ni prioridades y se puede evaluar fácilmente usando una **pila**.
 
 ---
 
-### Características
+## ¿Qué hace este programa?
 
-- El programa en C simula el autómata de pila para ver si una expresión postfija está bien escrita y, si lo está, la halla.
-- Se crearon 4 funciones (Push,Pop,esOperador e imprimir_pila), las cuales son el motor de nuestro programa.
-- En la zona principal, se solicita todos los valores y operandos (+,-,/,*) y los coloca en orden:
-  - si tenemos un operando, llama a push y los coloca en la cima de la pila
-  - si tenemos un operador llama a pop y extrae los dos últimos operandos
-  - halla el valor encontrado y lo coloca con un push de nuevo sobre la cima de la pila.
-  - Al final si quedó solo un valor sobre la cima de la pila (el resultado de toda la operación), el procedimiento es correcto
+Dada una expresión postfija, el programa:
 
----
-
-### Herramientas Usadas
-
-- Lógica Principal fue desarrollado en lenguaje C
-- Modelo teórico utilizado, un autómata de pila
+1. Lee la entrada como una secuencia de tokens separados por espacios.
+2. Usa una pila para ir procesando números y operadores.
+3. Informa si la expresión es válida o no.
+4. Muestra el **resultado numérico** cuando la expresión es correcta.
+5. Reporta errores como:
+   - Falta de operandos.
+   - División entre cero.
+   - Resultado no único en la pila al final.
 
 ---
 
-### Ejecución
+## Interpretación del proceso
 
+Objetivo: calcular el resultado numérico de una expresión postfija (por ejemplo `10 5 +`).
+
+1. Si se lee un **número**, se apila (operación *push*).
+2. Si se lee un **operador** (`+`, `-`, `*`, `/`):
+   - Se sacan de la pila los dos últimos números (operaciones *pop*).
+   - Se aplica la operación: `resultado = operando1 operador operando2`.
+   - El resultado se vuelve a apilar (*push*).
+3. Al finalizar la lectura:
+   - Si queda **exactamente un número** en la pila → la expresión es **VÁLIDA** y ese es el resultado.
+   - Si la pila queda vacía o con más de un número → la expresión es **INVÁLIDA**.
+   - Si se intenta dividir entre cero → la expresión se marca como **INVÁLIDA** por error aritmético.
+
+---
+
+## Estructura del repositorio
+
+```text
+AP_postfijo.c   → Código fuente en C
+LICENSE         → Licencia del proyecto
+README.md       → Documentación principal
+```
+## Requisitos
+- Compilador de C (por ejemplo, `gcc`)
+    - En Linux: suele venir en el paquete `build-essential`.
+    - En Windows: se puede usar MinGW o WSL.
+- Consola o terminal para compilar y ejecutar el programa.
+
+## Compilación y ejecución
+1. Compilar:
+   ``` bash
+   gcc AP_postfijo.c -o ap_postfijo
+   ```
+2. Ejecutar:
+    ``` bash
+   ./ap_postfijo
+   ```
+3. Ingresar la expresión postfija cuando el programa lo solicite, separando cada token con un espacio:
+   ``` bash
+   Ingrese la expresión postfija:
+    3 4 + 2 *
+   ```
+## Ejemplos de uso
+- **Ejemplo 1: expresión válida simple**
+Entrada:
+ ``` bash
+   2 3 +
+   ```
+Salida esperada: 
+ ``` bash
+   Resultado: 5
+   ```
