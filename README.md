@@ -87,11 +87,57 @@ README.md       → Documentación principal
    ```
 ## Ejemplos de uso
 - **Ejemplo 1: expresión válida simple**
-Entrada:
- ``` bash
-   2 3 +
+   - Entrada:
+    ``` bash
+      2 3 +
+     ```
+   - Salida esperada: 
+    ``` bash
+      Resultado: 5
    ```
-Salida esperada: 
- ``` bash
-   Resultado: 5
+- **Ejemplo 2: expresión compuesta**
+  - Entrada:
+    ``` bash
+      3 4 + 2 *
+     ```
+   - Salida esperada: 
+    ``` bash
+      Resultado: 14
    ```
+- **Ejemplo 3: operandos insuficientes**
+  - Entrada:
+    ``` bash
+      5 +
+     ```
+   - Salida esperada: 
+    ``` bash
+      Error: faltan operandos para aplicar el operador "+"
+   ```
+- **Ejemplo 4: división entre cero**
+  - Entrada:
+    ``` bash
+      4 0 /
+     ```
+   - Salida esperada: 
+    ``` bash
+      Error: División entre cero
+   ```
+
+## Características principales
+- El programa simula un autómata de pila que verifica si la expresión postfija está bien formada y, en caso afirmativo, la evalúa.
+- Se utilizan cuatro funciones principales que actúan como motor del programa:
+   - `push` → inserta un valor en la cima de la pila.
+   - `pop` → extrae el valor superior de la pila.
+   - `esOperador` → reconoce si un token es un operador válido.
+   - `imprimir_pila` → muestra el contenido actual de la pila (útil para entender el proceso).
+- En la parte principal del programa:
+   - Si se encuentra un operando, se llama a `push` y se coloca en la cima de la pila.
+   - Si se encuentra un operador, se llaman a pop dos veces para obtener los operandos.
+   - Se calcula el resultado parcial y se vuelve a guardar en la pila con push.
+   - Al final, si queda un solo valor en la pila, ese es el resultado final de la expresión.
+## Herramientas usadas
+- Lenguaje de programación: C.
+- Modelo teórico: **Autómata de Pila**, aplicado a la evaluación de expresiones en notación postfija.
+## Licencia
+Este proyecto se distribuye bajo la **Licencia MIT**.
+Consulta el archivo `LICENSE` para más detalles.
