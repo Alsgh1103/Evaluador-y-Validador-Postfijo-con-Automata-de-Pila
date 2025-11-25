@@ -1,5 +1,4 @@
-# 🧮 Calculadora RPN Interactiva
-
+# 🧮 EVALUADOR Y VALIDADOR POSTFIJO
 > Una implementación robusta, modular y eficiente de una calculadora de **Notación Polaca Inversa (Reverse Polish Notation)** escrita en **C**.
 
 ![Language](https://img.shields.io/badge/Lenguaje-C-00599C?style=flat-square&logo=c&logoColor=white)
