@@ -51,17 +51,46 @@ Necesitas tener instalado un compilador de C (como `gcc`) y la utilidad `make`.
   Gracias al `Makefile`, compilar el proyecto es tan simple como ejecutar:
 
 ```Bash
-  make
+make
 ```
 Esto generará un ejecutable llamado `rpn_calculator`.
 
 2. Ejecución
 Inicia la calculadora con:
 ```bash
-  ./rpn_calculator
+./rpn_calculator
 ```
 3. Limpieza (Opcional)
 Para eliminar los archivos objeto (`.o`) y el ejecutable generado:
 ```Bash
-  make clean
+make clean
 ```
+🎮 Ejemplo de Sesión
+Así se ve una interacción real para calcular la operación `(5 + 3) * 2`:
+```C
+------ EVALUADOR Y VALIDADOR POSTFIJO ------
+1. Escribe numero y ENTER.
+2. Escribe operador y ENTER.
+3. Escribe '=' para terminar.
+---------------------------------------------
+> 5 3 +
+   Dato ingresado.
+   [ Pila: 5 ] <
+>    Dato ingresado.
+   [ Pila: 5 3 ] <
+>    Operacion '+' aplicada.
+   [ Pila: 8 ] <
+> 2 *
+   Dato ingresado.
+   [ Pila: 8 2 ] <
+>    Operacion '*' aplicada.
+   [ Pila: 16 ] <
+> =
+
+--- RESULTADO FINAL ---
+Resultado: 16
+```
+## 🛠️ Tecnologías Utilizadas
+- Lenguaje C: Gestión de memoria y punteros.
+- Make: Automatización de compilación.
+- Estructuras de Datos: Implementación manual de Pilas (LIFO).
