@@ -65,7 +65,7 @@ Para eliminar los archivos objeto (`.o`) y el ejecutable generado:
 ```Bash
 make clean
 ```
-🎮 Ejemplo de Sesión
+## 🎮 Ejemplo de Sesión
 Así se ve una interacción real para calcular la operación `(5 + 3) * 2`:
 ```C
 ------ EVALUADOR Y VALIDADOR POSTFIJO ------
