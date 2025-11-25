@@ -32,7 +32,7 @@ El sistema está diseñado para ser **interactivo**, permitiendo al usuario visu
 El código sigue una estructura estándar de la industria para facilitar su mantenimiento y escalabilidad:
 
 ```text
-rpn-calculator/
+RPN-CALCULATOR/
 ├── include/        # Archivos de cabecera (.h)
 │   ├── stack.h     # Definiciones de la Pila
 │   └── utils.h     # Funciones auxiliares y validaciones
@@ -65,7 +65,7 @@ sudo apt install build-essential
 ```
 Esto instalará automáticamente `gcc` y `make`.
 
-🪟 Opción B: Windows
+#### 🪟 Opción B: Windows
 Para compilar C en Windows de manera profesional, recomendamos usar **MSYS2** o **MinGW**.
 
 **Método Rápido (vía Chocolatey)**: Si tienes Chocolatey instalado, abre PowerShell como Administrador y ejecuta:
@@ -73,18 +73,45 @@ Para compilar C en Windows de manera profesional, recomendamos usar **MSYS2** o 
 ```PowerShell
 choco install make mingw
 ```
+**Método Manual (Sin gestores de paquetes):**
+1. Descarga el instalador de w64devkit (un kit portable que no requiere instalación compleja) desde [GitHub w64devkit](https://github.com/skeeto/w64devkit/releases).
+2. Descarga el archivo `.zip` más reciente (ej. `w64devkit-1.20.0.zip`).
+3. Descomprímelo en una carpeta accesible.
+4. Ejecuta el archivo `w64devkit.exe` que está dentro. Esto abrirá una terminal donde `gcc` y `make` funcionarán inmediatamente.
 
+### 3. Compilación del proyecto
+Una vez que tengas las dependencias, compilar el proyecto es automático gracias al archivo `Makefile`.
+
+Abre la terminal en la carpeta `RPN-CALCULATOR`
+Ejecuta el comando de compilación:
+```Bash
+make
+```
+   #### Nota para Windows: Si instalaste MinGW manualmente y el comando make no funciona, intenta usar mingw32-make.
 
 ### 4. Ejecución
-Inicia la calculadora con:
-```bash
+Una vez compilado, se generará el ejecutable. Inícialo con el comando correspondiente a tu sistema:
+**En Linux / Mac / Git Bash:**
+```
+Bash
 ./rpn_calculator
 ```
+**En Windows (CMD / PowerShell):**
+```PowerShell
+.\rpn_calculator.exe
+```
+
 ### 5. Limpieza (Opcional)
 Para eliminar los archivos objeto (`.o`) y el ejecutable generado:
 ```Bash
 make clean
 ```
+### ¿Por qué esta estructura es mejor?
+
+1.  **Paso 0 (Validación):** Evita que el usuario instale cosas si ya las tiene (muy común en Linux).
+2.  **Windows es complicado:** En Windows, `make` no viene instalado por defecto. He dado una solución **"Método Manual" (w64devkit)** que es infalible porque es portable (bajar, descomprimir y ejecutar), eliminando los problemas de configurar variables de entorno (PATH) que suelen confundir a los principiantes.
+3.  **Diferenciación de Ejecución:** Muchos tutoriales dicen `./programa` y eso falla en el CMD de Windows. Aquí especifico claramente `.\` para Windows y `./` para Linux.
+
 ## 🎮 Ejemplo de Sesión
 Así se ve una interacción real para calcular la operación `(5 + 3) * 2`:
 ```C
