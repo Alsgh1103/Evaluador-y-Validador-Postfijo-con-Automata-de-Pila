@@ -7,11 +7,11 @@
 int main() {
     char token_buffer[50];
 
-    printf("------ POSTFIX EVALUATOR & VALIDATOR ------\n");
-    printf("1. Type number and ENTER.\n");
-    printf("2. Type operator and ENTER.\n");
-    printf("3. Type '=' to finish.\n");
-    printf("-------------------------------------------\n");
+    printf("------ EVALUADOR Y VALIDADOR POSTFIJO ------\n");
+    printf("1. Escribe numero y ENTER.\n");
+    printf("2. Escribe operador y ENTER.\n");
+    printf("3. Escribe '=' para terminar.\n");
+    printf("---------------------------------------------\n");
 
     while (1) {
         printf("> ");
@@ -31,40 +31,40 @@ int main() {
             else if (strcmp(token_buffer, "*") == 0) push(op1 * op2);
             else if (strcmp(token_buffer, "/") == 0) {
                 if (op2 == 0) {
-                    printf("FATAL ERROR: Division by zero.\n");
+                    printf("ERROR FATAL: Division por cero.\n");
                     return 1;
                 }
                 push(op1 / op2);
             }
-            printf("   Operation '%s' applied.\n", token_buffer);
+            printf("   Operacion '%s' aplicada.\n", token_buffer);
         }
         else {
             char *endptr;
             double value = strtod(token_buffer, &endptr);
 
             if (*endptr != '\0') {
-                printf("FATAL ERROR: '%s' is invalid.\n", token_buffer);
+                printf("ERROR FATAL: '%s' no es valido.\n", token_buffer);
                 return 1;
             }
 
             push(value);
-            printf("   Data entered.\n");
+            printf("   Dato ingresado.\n");
         }
 
         print_stack();
     }
 
-    printf("\n--- FINAL RESULT ---\n");
+    printf("\n--- RESULTADO FINAL ---\n");
     int size = get_stack_size();
 
     if (size == 1) {
-        printf("Result: ");
+        printf("Resultado: ");
         print_formatted(get_top_value());
         printf("\n");
     } else if (size == 0) {
-        printf("Stack empty.\n");
+        printf("Pila vacia.\n");
     } else {
-        printf("ERROR: Incomplete (Remaining %d numbers).\n", size);
+        printf("ERROR: Incompleto (Sobran %d numeros).\n", size);
     }
 
     return 0;
