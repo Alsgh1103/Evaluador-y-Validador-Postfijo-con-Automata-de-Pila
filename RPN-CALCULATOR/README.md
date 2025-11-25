@@ -43,24 +43,44 @@ rpn-calculator/
 ├── Makefile        # Script de compilación automatizada
 └── README.md       # Documentación del proyecto
 ```
-## 🚀 Instalación y Uso
-**Prerrequisitos**
-Necesitas tener instalado un compilador de C (como `gcc`) y la utilidad `make`.
+## ⚙️ Guía de Instalación y Ejecución
 
-1. Compilación
-  Gracias al `Makefile`, compilar el proyecto es tan simple como ejecutar:
+Sigue estos pasos para configurar el entorno y ejecutar el proyecto en tu sistema operativo (Windows o Linux).
 
-```Bash
-make
+### 1. Comprobación de Prerrequisitos
+Antes de instalar nada, verifica si ya tienes las herramientas necesarias. Abre tu terminal (PowerShell en Windows o Terminal en Linux) y ejecuta:
+
+```bash
+gcc --version
+make --version
 ```
-Esto generará un ejecutable llamado `rpn_calculator`.
+- ✅ Si ambos comandos muestran una versión: Salta directamente al paso 3.
+- ❌ Si recibes un error como "comando no encontrado" o "not recognized": Sigue las instrucciones de instalación abajo según tu sistema.
+2. Instalación de Dependencias
+🐧 Opción A: Linux (Ubuntu/Debian)
+La forma más rápida es instalar el paquete esencial de construcción:
+```bash
+sudo apt update
+sudo apt install build-essential
+```
+Esto instalará automáticamente `gcc` y `make`.
 
-2. Ejecución
+🪟 Opción B: Windows
+Para compilar C en Windows de manera profesional, recomendamos usar **MSYS2** o **MinGW**.
+
+**Método Rápido (vía Chocolatey)**: Si tienes Chocolatey instalado, abre PowerShell como Administrador y ejecuta:
+
+```PowerShell
+choco install make mingw
+```
+
+
+4. Ejecución
 Inicia la calculadora con:
 ```bash
 ./rpn_calculator
 ```
-3. Limpieza (Opcional)
+5. Limpieza (Opcional)
 Para eliminar los archivos objeto (`.o`) y el ejecutable generado:
 ```Bash
 make clean
