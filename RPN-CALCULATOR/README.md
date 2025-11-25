@@ -94,4 +94,6 @@ Resultado: 16
 - Lenguaje C: Gestión de memoria y punteros.
 - Make: Automatización de compilación.
 - Estructuras de Datos: Implementación manual de Pilas (LIFO).
-**🪄 Desarrollado por grupo 2**
+<div align="center">
+  🪄 Desarrollado por grupo 2
+</div>
