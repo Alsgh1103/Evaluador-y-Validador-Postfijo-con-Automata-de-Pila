@@ -105,11 +105,6 @@ Para eliminar los archivos objeto (`.o`) y el ejecutable generado:
 ```Bash
 make clean
 ```
-### ¿Por qué esta estructura es mejor?
-
-1.  **Paso 0 (Validación):** Evita que el usuario instale cosas si ya las tiene (muy común en Linux).
-2.  **Windows es complicado:** En Windows, `make` no viene instalado por defecto. He dado una solución **"Método Manual" (w64devkit)** que es infalible porque es portable (bajar, descomprimir y ejecutar), eliminando los problemas de configurar variables de entorno (PATH) que suelen confundir a los principiantes.
-3.  **Diferenciación de Ejecución:** Muchos tutoriales dicen `./programa` y eso falla en el CMD de Windows. Aquí especifico claramente `.\` para Windows y `./` para Linux.
 
 ## 🎮 Ejemplo de Sesión
 Así se ve una interacción real para calcular la operación `(5 + 3) * 2`:
