@@ -10,7 +10,7 @@ static int top = -1;
 
 void push(double value) {
     if (top >= MAX_STACK_SIZE - 1) {
-        printf("FATAL ERROR: Stack overflow.\n");
+        printf("ERROR FATAL: Desbordamiento de pila.\n");
         exit(1);
     }
     top++;
@@ -19,7 +19,7 @@ void push(double value) {
 
 double pop() {
     if (top < 0) {
-        printf("FATAL ERROR: Missing operands in stack.\n");
+        printf("ERROR FATAL: Faltan operandos en la pila.\n");
         exit(1);
     }
     double value = stack[top];
@@ -28,9 +28,9 @@ double pop() {
 }
 
 void print_stack() {
-    printf("   [ Stack: ");
+    printf("   [ Pila: ");
     if (top == -1) {
-        printf("empty ");
+        printf("vacia ");
     } else {
         for (int j = 0; j <= top; j++) {
             print_formatted(stack[j]);
