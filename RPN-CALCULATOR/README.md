@@ -56,8 +56,8 @@ make --version
 ```
 - ✅ Si ambos comandos muestran una versión: Salta directamente al paso 3.
 - ❌ Si recibes un error como "comando no encontrado" o "not recognized": Sigue las instrucciones de instalación abajo según tu sistema.
-2. Instalación de Dependencias
-🐧 Opción A: Linux (Ubuntu/Debian)
+### 2. Instalación de Dependencias
+#### 🐧 Opción A: Linux (Ubuntu/Debian)
 La forma más rápida es instalar el paquete esencial de construcción:
 ```bash
 sudo apt update
@@ -75,12 +75,12 @@ choco install make mingw
 ```
 
 
-4. Ejecución
+### 4. Ejecución
 Inicia la calculadora con:
 ```bash
 ./rpn_calculator
 ```
-5. Limpieza (Opcional)
+### 5. Limpieza (Opcional)
 Para eliminar los archivos objeto (`.o`) y el ejecutable generado:
 ```Bash
 make clean
