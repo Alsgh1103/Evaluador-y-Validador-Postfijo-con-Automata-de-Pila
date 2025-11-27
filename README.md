@@ -57,7 +57,7 @@ Este autómata (finito / de pila trivial) decide si cada token leído es:
 - **Operador aritmético** (`+`, `-`, `*`, `/`).
 - **Token inválido**.
 
-![Autómata para distinguir operando / operador](img/automata_tokens.png)
+![Autómata para distinguir operando / operador](img/AFD.jpeg)
 
 ### 2. Autómata de Pila para validar la expresión postfija
 
@@ -68,7 +68,7 @@ El segundo autómata modela el comportamiento clásico de la pila en RPN:
 - La expresión es **aceptada** si al consumir toda la entrada queda exactamente un `X`
   sobre el símbolo inicial `Z` (es decir, un único resultado).
 
-![Autómata de pila que valida expresiones postfijas](img/ap_postfijo.png)
+![Autómata de pila que valida expresiones postfijas](img/AP.jpeg)
 
 ---
 
