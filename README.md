@@ -42,6 +42,36 @@ Dada una expresión postfija, el programa:
 
 ---
 
+##  Modelo teórico
+
+El proyecto se apoya en dos niveles:
+
+1. Un **autómata para clasificar tokens** como *operando* u *operador*.
+2. Un **autómata de pila** que valida y evalúa la expresión postfija completa.
+
+### 1. Autómata para validar si un token es operando u operador
+
+Este autómata (finito / de pila trivial) decide si cada token leído es:
+
+- **Operando** numérico (entero o decimal).
+- **Operador aritmético** (`+`, `-`, `*`, `/`).
+- **Token inválido**.
+
+![Autómata para distinguir operando / operador](img/automata_tokens.png)
+
+### 2. Autómata de Pila para validar la expresión postfija
+
+El segundo autómata modela el comportamiento clásico de la pila en RPN:
+
+- Por cada **operando** leído → apila un símbolo `X`.
+- Por cada **operador binario** leído → desapila dos `X` y vuelve a apilar uno (`X`).
+- La expresión es **aceptada** si al consumir toda la entrada queda exactamente un `X`
+  sobre el símbolo inicial `Z` (es decir, un único resultado).
+
+![Autómata de pila que valida expresiones postfijas](img/ap_postfijo.png)
+
+---
+
 ## Interpretación del proceso
 
 Objetivo: calcular el resultado numérico de una expresión postfija (por ejemplo `10 5 +`).
