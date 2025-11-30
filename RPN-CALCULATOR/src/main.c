@@ -1,20 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "../include/stack.h"
 #include "../include/utils.h"
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf("Error: Uso ./rpn_calculator archivo.txt\n");
-        return 1;
-    }
-
-    char nombre_entrada[200];
+void modo_archivo(char *nombre_entrada) {
     char nombre_res[300];
     char nombre_evo[300];
-
-    strcpy(nombre_entrada, argv[1]);
 
     sprintf(nombre_res, "resultado_%s", nombre_entrada);
     sprintf(nombre_evo, "evolucion_%s", nombre_entrada);
@@ -25,73 +18,68 @@ int main(int argc, char *argv[]) {
 
     if (f_entrada == NULL) {
         printf("ERROR: No se pudo abrir el archivo %s\n", nombre_entrada);
-        return 1;
+        exit(1);
     }
 
     fprintf(f_evo, "ENTRADA    =>   ESTADO DE LA PILA\n");
     fprintf(f_evo, "---------------------------------\n");
-    
     fprintf(f_evo, "(Inicio)   =>   ");
     print_stack_file(f_evo);
     fprintf(f_evo, "\n");
 
-    char token_buffer[50];
+    char token[50];
 
-    while (1) {
-        if (fscanf(f_entrada, "%49s", token_buffer) == EOF) break;
+    while (fscanf(f_entrada, "%49s", token) == 1) {
+        if (strcmp(token, "=") == 0) break;
 
-        if (strcmp(token_buffer, "=") == 0) break;
-
-        if (is_operator(token_buffer)) {
+        if (is_operator(token)) {
             if (get_stack_size() < 2) {
-                fprintf(f_res, "ERROR: Faltan operandos para operar '%s'.", token_buffer);
+                fprintf(f_res, "ERROR: Faltan operandos para operar '%s'.", token);
                 exit(1);
             }
-
             double op2 = pop();
             double op1 = pop();
+            double res = 0;
 
-            if (strcmp(token_buffer, "+") == 0) push(op1 + op2);
-            else if (strcmp(token_buffer, "-") == 0) push(op1 - op2);
-            else if (strcmp(token_buffer, "*") == 0) push(op1 * op2);
-            else if (strcmp(token_buffer, "/") == 0) {
+            if (strcmp(token, "+") == 0) res = op1 + op2;
+            else if (strcmp(token, "-") == 0) res = op1 - op2;
+            else if (strcmp(token, "*") == 0) res = op1 * op2;
+            else if (strcmp(token, "/") == 0) {
                 if (op2 == 0) {
                     fprintf(f_res, "ERROR: Division por cero.");
                     exit(1);
                 }
-                push(op1 / op2);
+                res = op1 / op2;
             }
+            push(res);
             
-            fprintf(f_evo, "%-10s =>   ", token_buffer);
+            fprintf(f_evo, "%-10s =>   ", token);
             print_stack_file(f_evo);
             fprintf(f_evo, "\n");
-        }
+        } 
         else {
             char *endptr;
-            double value = strtod(token_buffer, &endptr);
-
+            double value = strtod(token, &endptr);
             if (*endptr != '\0') {
                 fprintf(f_res, "ERROR: Simbolo invalido.");
                 exit(1);
             }
-
             push(value);
             
-            fprintf(f_evo, "%-10s =>   ", token_buffer);
+            fprintf(f_evo, "%-10s =>   ", token);
             print_stack_file(f_evo);
             fprintf(f_evo, "\n");
         }
     }
 
     int size = get_stack_size();
-
     if (size == 1) {
         printf("Exito. Archivos generados: %s y %s\n", nombre_res, nombre_evo);
         fprintf(f_res, "Resultado: ");
         print_formatted_file(f_res, get_top_value());
         fprintf(f_res, "\n");
     } else if (size == 0) {
-        fprintf(f_res, "ERROR: Pila vacia (No hay resultado).");
+        fprintf(f_res, "ERROR: Pila vacia.");
         exit(1);
     } else {
         fprintf(f_res, "ERROR: Expresion incompleta (Sobran %d numeros).", size);
@@ -101,6 +89,120 @@ int main(int argc, char *argv[]) {
     fclose(f_entrada);
     fclose(f_res);
     fclose(f_evo);
+}
 
+void modo_consola() {
+    srand(time(NULL)); 
+    int id = rand() % 10000; 
+
+    char nombre_res[100];
+    char nombre_evo[100];
+    sprintf(nombre_res, "resultado_manual_%d.txt", id);
+    sprintf(nombre_evo, "evolucion_manual_%d.txt", id);
+
+    FILE *f_res = fopen(nombre_res, "w");
+    FILE *f_evo = fopen(nombre_evo, "w");
+
+    printf("------ MODO CONSOLA ------\n");
+    printf("Ingrese operacion y presione ENTER.\n");
+    printf("Escribe '=' para terminar.\n");
+    printf("--------------------------\n");
+
+    fprintf(f_evo, "ENTRADA    =>   ESTADO DE LA PILA\n");
+    fprintf(f_evo, "---------------------------------\n");
+    fprintf(f_evo, "(Inicio)   =>   ");
+    print_stack_file(f_evo);
+    fprintf(f_evo, "\n");
+
+    char token[50];
+
+    while (1) {
+        printf("> ");
+        if (scanf("%49s", token) == EOF) break;
+        if (strcmp(token, "=") == 0) break;
+
+        if (is_operator(token)) {
+            if (get_stack_size() < 2) {
+                printf("ERROR FATAL: Faltan operandos.\n");
+                fprintf(f_res, "ERROR: Faltan operandos.");
+                exit(1);
+            }
+            double op2 = pop();
+            double op1 = pop();
+            double res = 0;
+
+            if (strcmp(token, "+") == 0) res = op1 + op2;
+            else if (strcmp(token, "-") == 0) res = op1 - op2;
+            else if (strcmp(token, "*") == 0) res = op1 * op2;
+            else if (strcmp(token, "/") == 0) {
+                if (op2 == 0) {
+                    printf("ERROR FATAL: Division por cero.\n");
+                    fprintf(f_res, "ERROR: Division por cero.");
+                    exit(1);
+                }
+                res = op1 / op2;
+            }
+            push(res);
+            
+            printf("   Operacion aplicada. ");
+            print_stack(); 
+
+            fprintf(f_evo, "%-10s =>   ", token);
+            print_stack_file(f_evo);
+            fprintf(f_evo, "\n");
+        } 
+        else {
+            char *endptr;
+            double value = strtod(token, &endptr);
+            if (*endptr != '\0') {
+                printf("ERROR FATAL: '%s' no es valido.\n", token);
+                fprintf(f_res, "ERROR: Simbolo invalido.");
+                exit(1);
+            }
+            push(value);
+
+            printf("   Dato ingresado. ");
+            print_stack();
+
+            fprintf(f_evo, "%-10s =>   ", token);
+            print_stack_file(f_evo);
+            fprintf(f_evo, "\n");
+        }
+    }
+
+    int size = get_stack_size();
+    if (size == 1) {
+        printf("\nResultado: ");
+        print_formatted(get_top_value());
+        printf("\n(Respaldos en %s y %s)\n", nombre_res, nombre_evo);
+
+        fprintf(f_res, "Resultado: ");
+        print_formatted_file(f_res, get_top_value());
+        fprintf(f_res, "\n");
+    } else if (size == 0) {
+        printf("ERROR: Pila vacia.\n");
+        fprintf(f_res, "ERROR: Pila vacia.");
+        exit(1);
+    } else {
+        printf("ERROR: Expresion incompleta.\n");
+        fprintf(f_res, "ERROR: Expresion incompleta.");
+        exit(1);
+    }
+
+    fclose(f_res);
+    fclose(f_evo);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc == 2) {
+        modo_archivo(argv[1]);
+    } 
+    else if (argc == 1) {
+        modo_consola();
+    } 
+    else {
+        printf("Error: Uso incorrecto.\n");
+        return 1;
+    }
     return 0;
 }
