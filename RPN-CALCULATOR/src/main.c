@@ -35,6 +35,7 @@ void modo_archivo(char *nombre_entrada) {
         if (is_operator(token)) {
             if (get_stack_size() < 2) {
                 fprintf(f_res, "ERROR: Faltan operandos para operar '%s'.", token);
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: Faltan operandos]\n", token);
                 exit(1);
             }
             double op2 = pop();
@@ -47,6 +48,7 @@ void modo_archivo(char *nombre_entrada) {
             else if (strcmp(token, "/") == 0) {
                 if (op2 == 0) {
                     fprintf(f_res, "ERROR: Division por cero.");
+                    fprintf(f_evo, "%-10s =>   [RECHAZADO: Division por 0]\n", token);
                     exit(1);
                 }
                 res = op1 / op2;
@@ -62,6 +64,7 @@ void modo_archivo(char *nombre_entrada) {
             double value = strtod(token, &endptr);
             if (*endptr != '\0') {
                 fprintf(f_res, "ERROR: Simbolo invalido.");
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: Simbolo invalido]\n", token);
                 exit(1);
             }
             push(value);
@@ -78,11 +81,14 @@ void modo_archivo(char *nombre_entrada) {
         fprintf(f_res, "Resultado: ");
         print_formatted_file(f_res, get_top_value());
         fprintf(f_res, "\n");
+        fprintf(f_evo, "(Fin)      =>   [ACEPTADO]\n");
     } else if (size == 0) {
         fprintf(f_res, "ERROR: Pila vacia.");
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Pila vacia]\n");
         exit(1);
     } else {
         fprintf(f_res, "ERROR: Expresion incompleta (Sobran %d numeros).", size);
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Sobran numeros]\n");
         exit(1);
     }
 
@@ -125,6 +131,7 @@ void modo_consola() {
             if (get_stack_size() < 2) {
                 printf("ERROR FATAL: Faltan operandos.\n");
                 fprintf(f_res, "ERROR: Faltan operandos.");
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: Faltan operandos]\n", token);
                 exit(1);
             }
             double op2 = pop();
@@ -138,6 +145,7 @@ void modo_consola() {
                 if (op2 == 0) {
                     printf("ERROR FATAL: Division por cero.\n");
                     fprintf(f_res, "ERROR: Division por cero.");
+                    fprintf(f_evo, "%-10s =>   [RECHAZADO: Division por 0]\n", token);
                     exit(1);
                 }
                 res = op1 / op2;
@@ -157,6 +165,7 @@ void modo_consola() {
             if (*endptr != '\0') {
                 printf("ERROR FATAL: '%s' no es valido.\n", token);
                 fprintf(f_res, "ERROR: Simbolo invalido.");
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: Simbolo invalido]\n", token);
                 exit(1);
             }
             push(value);
@@ -179,13 +188,16 @@ void modo_consola() {
         fprintf(f_res, "Resultado: ");
         print_formatted_file(f_res, get_top_value());
         fprintf(f_res, "\n");
+        fprintf(f_evo, "(Fin)      =>   [ACEPTADO]\n");
     } else if (size == 0) {
         printf("ERROR: Pila vacia.\n");
         fprintf(f_res, "ERROR: Pila vacia.");
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Pila vacia]\n");
         exit(1);
     } else {
         printf("ERROR: Expresion incompleta.\n");
         fprintf(f_res, "ERROR: Expresion incompleta.");
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Sobran numeros]\n");
         exit(1);
     }
 
