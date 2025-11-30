@@ -40,6 +40,19 @@ void print_stack() {
     printf("] <\n");
 }
 
+void print_stack_file(FILE *f) {
+    fprintf(f, "[ ");
+    if (top == -1) {
+        fprintf(f, "vacia ");
+    } else {
+        for (int j = 0; j <= top; j++) {
+            print_formatted_file(f, stack[j]); 
+            fprintf(f, " ");
+        }
+    }
+    fprintf(f, "]");
+}
+
 int get_stack_size() {
     return top + 1;
 }
