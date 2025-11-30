@@ -4,7 +4,6 @@
 
 void print_formatted(double value) {
     char buffer[100];
-
     sprintf(buffer, "%.10f", value);
 
     int len = strlen(buffer);
@@ -23,4 +22,21 @@ void print_formatted(double value) {
 int is_operator(char* token) {
     return (strcmp(token, "+") == 0 || strcmp(token, "-") == 0 ||
             strcmp(token, "*") == 0 || strcmp(token, "/") == 0);
+}
+
+void print_formatted_file(FILE *f, double value) {
+    char buffer[100];
+    sprintf(buffer, "%.10f", value);
+
+    int len = strlen(buffer);
+    while (len > 0 && buffer[len-1] == '0') {
+        buffer[len-1] = '\0';
+        len--;
+    }
+
+    if (len > 0 && buffer[len-1] == '.') {
+        buffer[len-1] = '\0';
+    }
+
+    fprintf(f, "%s", buffer);
 }
