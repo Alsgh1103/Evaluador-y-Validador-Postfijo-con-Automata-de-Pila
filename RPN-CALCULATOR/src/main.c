@@ -129,7 +129,7 @@ void modo_consola() {
 
         if (is_operator(token)) {
             if (get_stack_size() < 2) {
-                printf("ERROR FATAL: Faltan operandos.\n");
+                // Solo guardamos en archivo y salimos
                 fprintf(f_res, "ERROR: Faltan operandos.");
                 fprintf(f_evo, "%-10s =>   [RECHAZADO: Faltan operandos]\n", token);
                 exit(1);
@@ -143,7 +143,6 @@ void modo_consola() {
             else if (strcmp(token, "*") == 0) res = op1 * op2;
             else if (strcmp(token, "/") == 0) {
                 if (op2 == 0) {
-                    printf("ERROR FATAL: Division por cero.\n");
                     fprintf(f_res, "ERROR: Division por cero.");
                     fprintf(f_evo, "%-10s =>   [RECHAZADO: Division por 0]\n", token);
                     exit(1);
@@ -152,9 +151,6 @@ void modo_consola() {
             }
             push(res);
             
-            printf("   Operacion aplicada. ");
-            print_stack(); 
-
             fprintf(f_evo, "%-10s =>   ", token);
             print_stack_file(f_evo);
             fprintf(f_evo, "\n");
@@ -163,15 +159,11 @@ void modo_consola() {
             char *endptr;
             double value = strtod(token, &endptr);
             if (*endptr != '\0') {
-                printf("ERROR FATAL: '%s' no es valido.\n", token);
                 fprintf(f_res, "ERROR: Simbolo invalido.");
                 fprintf(f_evo, "%-10s =>   [RECHAZADO: Simbolo invalido]\n", token);
                 exit(1);
             }
             push(value);
-
-            printf("   Dato ingresado. ");
-            print_stack();
 
             fprintf(f_evo, "%-10s =>   ", token);
             print_stack_file(f_evo);
@@ -181,21 +173,17 @@ void modo_consola() {
 
     int size = get_stack_size();
     if (size == 1) {
-        printf("\nResultado: ");
-        print_formatted(get_top_value());
-        printf("\n(Respaldos en %s y %s)\n", nombre_res, nombre_evo);
+        printf("\nExito. Archivos generados:\n -> %s\n -> %s\n", nombre_res, nombre_evo);
 
         fprintf(f_res, "Resultado: ");
         print_formatted_file(f_res, get_top_value());
         fprintf(f_res, "\n");
         fprintf(f_evo, "(Fin)      =>   [ACEPTADO]\n");
     } else if (size == 0) {
-        printf("ERROR: Pila vacia.\n");
         fprintf(f_res, "ERROR: Pila vacia.");
         fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Pila vacia]\n");
         exit(1);
     } else {
-        printf("ERROR: Expresion incompleta.\n");
         fprintf(f_res, "ERROR: Expresion incompleta.");
         fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Sobran numeros]\n");
         exit(1);
