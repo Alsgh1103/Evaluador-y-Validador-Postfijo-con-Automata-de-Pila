@@ -10,20 +10,23 @@
 
 ## 📖 Descripción
 
-Este proyecto consiste en un evaluador de expresiones matemáticas que utiliza una **pila (stack)** dinámica para procesar operaciones en tiempo real. A diferencia de las calculadoras tradicionales, el formato RPN elimina la necesidad de paréntesis, haciendo el cálculo computacionalmente más eficiente y lógico.
+Este proyecto consiste en un evaluador de expresiones matemáticas que utiliza una **pila (stack)** estática para procesar operaciones en tiempo real. A diferencia de las calculadoras tradicionales, el formato RPN elimina la necesidad de paréntesis, haciendo el cálculo computacionalmente más eficiente y lógico.
 
-El sistema está diseñado para ser **interactivo**, permitiendo al usuario visualizar el estado de la memoria (la pila) después de cada ingreso de datos.
+El sistema está diseñado para ser **versátil**, permitiendo al usuario trabajar tanto de forma interactiva (modo consola) como por lotes (modo archivo), generando siempre archivos de trazabilidad que registran cada paso de la evaluación.
 
 ## ✨ Características Principales
 
 * **Arquitectura Modular:** Código separado en lógica de pila (`stack`), utilidades (`utils`) y programa principal (`main`).
-* **Visualización en Tiempo Real:** Muestra el contenido de la pila paso a paso.
+* **Doble Modo de Operación:** Modo consola interactivo y modo archivo por lotes.
+* **Trazabilidad Completa:** Genera archivos de evolución mostrando el estado de la pila paso a paso.
 * **Formato Inteligente:** Muestra decimales solo cuando es necesario (ej: muestra `5` en lugar de `5.000000` y `2.5` si hay decimales).
-* **Manejo de Errores:** Sistema de "Muerte Súbita" que detecta y reporta:
+* **Manejo de Errores Estricto:** Sistema de validación que detecta y reporta:
   * División por cero.
-  * Desbordamiento de pila (Stack Overflow).
-  * Sintaxis inválida (ej: letras mezcladas con números).
+  * Desbordamiento de pila (Stack Overflow - máximo 100 elementos).
+  * Símbolos inválidos (ej: letras mezcladas con números).
   * Insuficiencia de operandos.
+  * Expresión incompleta (sobran números en la pila).
+  * Pila vacía al finalizar.
 
 ---
 
@@ -124,10 +127,13 @@ Ejecuta el programa sin argumentos para el modo interactivo token por token:
 .\rpn_calculator.exe
 ```
 
-* Permite ingresar tokens uno a uno
-* Muestra la pila después de cada operación
-* Genera archivos de respaldo automáticamente (`resultado_manual_XXXX.txt` y `evolucion_manual_XXXX.txt`)
+* Permite ingresar tokens uno a uno (números y operadores)
+* **NO muestra la pila en pantalla durante la ejecución** (solo genera archivos)
+* Genera archivos de trazabilidad automáticamente con ID aleatorio:
+  * `resultado_manual_XXXX.txt`: Resultado final o mensaje de error
+  * `evolucion_manual_XXXX.txt`: Traza completa paso a paso
 * Termina la sesión ingresando `=`
+* Al finalizar exitosamente, muestra en pantalla la ubicación de los archivos generados
 
 **Modo Archivo (Batch) - Con argumento de archivo:**
 
@@ -145,11 +151,12 @@ Ejecuta el programa con un archivo de entrada:
 .\rpn_calculator.exe entrada.txt
 ```
 
-* Lee la expresión completa desde el archivo
+* Lee la expresión completa desde el archivo (tokens separados por espacios)
+* El archivo debe terminar con el símbolo `=`
 * Genera dos archivos de salida:
-  * `resultado_<nombre>.txt`: Resultado final o mensaje de error
-  * `evolucion_<nombre>.txt`: Traza paso a paso del procesamiento
-* **Modo silencioso**: No muestra salida en consola (excepto confirmación de archivos generados)
+  * `resultado_<nombre_archivo>.txt`: Resultado final o mensaje de error
+  * `evolucion_<nombre_archivo>.txt`: Traza paso a paso del procesamiento
+* **Modo silencioso**: Solo muestra mensaje de confirmación al finalizar exitosamente
 
 ### 5. Limpieza (Opcional)
 
@@ -161,6 +168,8 @@ make clean
 
 ## 🎮 Ejemplo de Sesión
 
+### Modo Consola
+
 Así se ve una interacción real para calcular la operación `(5 + 3) * 2`:
 
 ```text
@@ -169,26 +178,100 @@ Ingrese operacion y presione ENTER.
 Escribe '=' para terminar.
 --------------------------
 > 5
-   Dato ingresado.    [ Pila: 5 ] <
 > 3
-   Dato ingresado.    [ Pila: 5 3 ] <
 > +
-   Operacion aplicada.    [ Pila: 8 ] <
 > 2
-   Dato ingresado.    [ Pila: 8 2 ] <
 > *
-   Operacion aplicada.    [ Pila: 16 ] <
 > =
 
+Exito. Archivos generados:
+ -> resultado_manual_3847.txt
+ -> evolucion_manual_3847.txt
+```
+
+**Contenido de `evolucion_manual_3847.txt`:**
+```text
+ENTRADA    =>   ESTADO DE LA PILA
+---------------------------------
+(Inicio)   =>   [ vacia ]
+5          =>   [ 5 ]
+3          =>   [ 5 3 ]
++          =>   [ 8 ]
+2          =>   [ 8 2 ]
+*          =>   [ 16 ]
+(Fin)      =>   [ACEPTADO]
+```
+
+**Contenido de `resultado_manual_3847.txt`:**
+```text
 Resultado: 16
-(Respaldos en resultado_manual_XXXX.txt y evolucion_manual_XXXX.txt)
+```
+
+### Modo Archivo
+
+**Contenido de `expresion.txt`:**
+```text
+10 5 + 2 * =
+```
+
+**Ejecución:**
+```bash
+./rpn_calculator expresion.txt
+```
+
+**Salida en pantalla:**
+```text
+Exito. Archivos generados: resultado_expresion.txt y evolucion_expresion.txt
+```
+
+**Contenido de `evolucion_expresion.txt`:**
+```text
+ENTRADA    =>   ESTADO DE LA PILA
+---------------------------------
+(Inicio)   =>   [ vacia ]
+10         =>   [ 10 ]
+5          =>   [ 10 5 ]
++          =>   [ 15 ]
+2          =>   [ 15 2 ]
+*          =>   [ 30 ]
+(Fin)      =>   [ACEPTADO]
+```
+
+**Contenido de `resultado_expresion.txt`:**
+```text
+Resultado: 30
 ```
 
 ## 🛠️ Tecnologías Utilizadas
 
-* Lenguaje C: Gestión de memoria y punteros.
-* Make: Automatización de compilación.
-* Estructuras de Datos: Implementación manual de Pilas (LIFO).
+* **Lenguaje C:** Gestión de memoria estática y manejo de archivos.
+* **Make:** Automatización de compilación.
+* **Estructuras de Datos:** Implementación manual de Pila estática (LIFO) con array de tamaño fijo.
+
+## 📋 Detalles de Implementación
+
+### Pila (Stack)
+* **Capacidad:** 100 elementos (definida por `MAX_STACK_SIZE`)
+* **Tipo:** Array estático de `double`
+* **Índice:** Variable `top` inicializada en -1 (indica pila vacía)
+
+### Operadores Soportados
+* Suma: `+`
+* Resta: `-`
+* Multiplicación: `*`
+* División: `/` (con validación de división por cero)
+
+### Validaciones Implementadas
+1. **Símbolos inválidos:** Verifica que cada token sea un número válido o un operador
+2. **Operandos insuficientes:** Verifica que haya al menos 2 números antes de operar
+3. **División por cero:** Validación explícita antes de dividir
+4. **Desbordamiento de pila:** Verifica límite de 100 elementos
+5. **Verificación final:** Debe quedar exactamente 1 elemento en la pila
+
+### Manejo de Errores
+Todos los errores usan el sistema **fail-fast** (`exit(1)`), escribiendo el error en:
+* Archivo de resultado (mensaje de error)
+* Archivo de evolución (marcador `[RECHAZADO]`)
 
 <div align="center">
   🪄 Desarrollado por grupo 2
