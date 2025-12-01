@@ -115,7 +115,7 @@ El segundo autómata modela el comportamiento clásico de la pila en RPN:
 El programa puede recibir la expresión postfija de dos formas:
 
 1. 💬 **Modo consola interactivo**: Ingresando tokens uno por uno hasta escribir `=`.
-2. 📄 **Modo archivo**: Leyendo desde un archivo de texto que contenga la expresión completa (tokens separados por espacios, terminando con `=`).
+2. 📄 **Modo archivo**: Leyendo desde un archivo de texto de cualquier nombre que contenga la expresión completa (tokens separados por espacios).
 
 ### 📤 Salida
 
