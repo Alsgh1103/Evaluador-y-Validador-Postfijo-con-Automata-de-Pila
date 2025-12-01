@@ -1,10 +1,12 @@
 # Evaluador y Validador Postfijo con Autómata de Pila (AP)
 
 Programa en lenguaje C que implementa un **Autómata de Pila (AP)** para la **evaluación y validación de expresiones aritméticas en notación postfija (RPN)**.  
+
 El sistema procesa una cadena de tokens (operandos y operadores `+`, `-`, `*`, `/`) y:
 
 - Determina si la expresión es **sintácticamente válida**.
 - **Calcula el resultado numérico** de la expresión si es correcta.
+- **Genera archivos de trazabilidad** que documentan paso a paso el proceso de evaluación.
 
 ---
 
@@ -31,18 +33,16 @@ Esta forma no necesita paréntesis ni prioridades y se puede evaluar fácilmente
 
 Dada una expresión postfija, el programa:
 
-1. Lee la entrada como una secuencia de tokens separados por espacios.
+1. Lee la entrada desde un archivo o desde la consola interactiva.
 2. Usa una pila para ir procesando números y operadores.
 3. Informa si la expresión es válida o no.
-4. Muestra el **resultado numérico** cuando la expresión es correcta.
-5. Reporta errores como:
-   - Falta de operandos.
-   - División entre cero.
-   - Resultado no único en la pila al final.
+4. **Genera dos archivos de salida:**
+   - **`evolucion_<nombre>.txt`**: Describe el paso a paso de la pila mostrando las transiciones del autómata.
+   - **`resultado_<nombre>.txt`**: Muestra el resultado numérico final (si es exitoso) o detalla el error específico (aritmético o sintáctico).
 
 ---
 
-##  Modelo teórico
+## Modelo teórico
 
 El proyecto se apoya en dos niveles:
 
@@ -65,8 +65,7 @@ El segundo autómata modela el comportamiento clásico de la pila en RPN:
 
 - Por cada **operando** leído → apila un símbolo `X`.
 - Por cada **operador binario** leído → desapila dos `X` y vuelve a apilar uno (`X`).
-- La expresión es **aceptada** si al consumir toda la entrada queda exactamente un `X`
-  sobre el símbolo inicial `Z` (es decir, un único resultado).
+- La expresión es **aceptada** si al consumir toda la entrada queda exactamente un `X` sobre el símbolo inicial `Z` (es decir, un único resultado).
 
 ![Autómata de pila que valida expresiones postfijas](IMAGENES/AP.jpeg)
 
@@ -89,85 +88,115 @@ Objetivo: calcular el resultado numérico de una expresión postfija (por ejempl
 ---
 
 ## Estructura del repositorio
-
 ```text
-AP_postfijo.c   → Código fuente en C
-LICENSE         → Licencia del proyecto
-README.md       → Documentación principal
+├── IMAGENES/                  # Diagramas de los autómatas
+│   ├── AFD.jpeg              # Autómata Finito Determinista
+│   └── AP.jpeg               # Autómata de Pila
+├── RPN-CALCULATOR/            # Código fuente del evaluador
+│   ├── include/              # Archivos de cabecera (.h)
+│   ├── src/                  # Código fuente (.c)
+│   ├── Makefile              # Script de compilación
+│   └── README.md             # Documentación técnica detallada
+├── docs/                      # Documentación académica
+│   ├── AvanceInformeTC.pdf
+│   ├── INFORME_FINAL.pdf
+│   ├── Informe_SegundoAvance.pdf
+│   └── PRESENTACIÓN_DIAPOSITIVAS.pdf
+├── LICENSE                    # Licencia MIT
+└── README.md                  # Este archivo (documentación principal)
 ```
-## Requisitos
-- Compilador de C (por ejemplo, `gcc`)
-    - En Linux: suele venir en el paquete `build-essential`.
-    - En Windows: se puede usar MinGW o WSL.
-- Consola o terminal para compilar y ejecutar el programa.
 
-## Compilación y ejecución
-1. Compilar:
-   ``` bash
-   gcc AP_postfijo.c -o ap_postfijo
-   ```
-2. Ejecutar:
-    ``` bash
-   ./ap_postfijo
-   ```
-3. Ingresar la expresión postfija cuando el programa lo solicite, separando cada token con un espacio:
-   ``` bash
-   Ingrese la expresión postfija:
-    3 4 + 2 *
-   ```
-## Ejemplos de uso
-- **Ejemplo 1: expresión válida simple**
-   - Entrada:
-    ``` bash
-      2 3 +
-     ```
-   - Salida esperada: 
-    ``` bash
-      Resultado: 5
-   ```
-- **Ejemplo 2: expresión compuesta**
-  - Entrada:
-    ``` bash
-      3 4 + 2 *
-     ```
-   - Salida esperada: 
-    ``` bash
-      Resultado: 14
-   ```
-- **Ejemplo 3: operandos insuficientes**
-  - Entrada:
-    ``` bash
-      5 +
-     ```
-   - Salida esperada: 
-    ``` bash
-      Error: faltan operandos para aplicar el operador "+"
-   ```
-- **Ejemplo 4: división entre cero**
-  - Entrada:
-    ``` bash
-      4 0 /
-     ```
-   - Salida esperada: 
-    ``` bash
-      Error: División entre cero
-   ```
+---
 
-## Características principales
-- El programa simula un autómata de pila que verifica si la expresión postfija está bien formada y, en caso afirmativo, la evalúa.
-- Se utilizan cuatro funciones principales que actúan como motor del programa:
-   - `push` → inserta un valor en la cima de la pila.
-   - `pop` → extrae el valor superior de la pila.
-   - `esOperador` → reconoce si un token es un operador válido.
-   - `imprimir_pila` → muestra el contenido actual de la pila (útil para entender el proceso).
-- En la parte principal del programa:
-   - Si se encuentra un operando, se llama a `push` y se coloca en la cima de la pila.
-   - Si se encuentra un operador, se llaman a pop dos veces para obtener los operandos.
-   - Se calcula el resultado parcial y se vuelve a guardar en la pila con push.
-   - Al final, si queda un solo valor en la pila, ese es el resultado final de la expresión.
+## Archivos de entrada y salida
+
+### Entrada
+
+El programa puede recibir la expresión postfija de dos formas:
+
+1. **Modo consola interactivo**: Ingresando tokens uno por uno hasta escribir `=`.
+2. **Modo archivo**: Leyendo desde un archivo de texto que contenga la expresión completa (tokens separados por espacios, terminando con `=`).
+
+### Salida
+
+El programa **siempre genera dos archivos**:
+
+#### 1. **`evolucion_<nombre>.txt`**
+Describe el paso a paso de la evaluación mostrando:
+- Número de paso
+- Transición del autómata aplicada
+- Descripción de la operación
+- Estado actual de la pila
+
+**Ejemplo exitoso:**
+```text
+PASO | TRANSICION                          | DESCRIPCION               | PILA
+-----|-------------------------------------|---------------------------|------------------
+0    | d(q0, e, Z0) = (q0, Z0)             | INICIO                    | Z0 [ vacia ]
+1    | d(q0, 10, Z0) = (q0, X Z0)          | 1 PUSH                    | Z0 [ 10 ]
+2    | d(q0, 5, X) = (q0, XX)              | 1 PUSH                    | Z0 [ 10 5 ]
+3    | d(q0, +, XX) = (q0, X)              | 2 POP Y 1 PUSH            | Z0 [ 15 ]
+4    | d(q0, e, X Z0) = (q0, e)            | ACEPTACION                | Z0 [ 15 ]
+```
+
+**Ejemplo con error:**
+```text
+PASO | TRANSICION                          | DESCRIPCION               | PILA
+-----|-------------------------------------|---------------------------|------------------
+0    | d(q0, e, Z0) = (q0, Z0)             | INICIO                    | Z0 [ vacia ]
+1    | d(q0, 5, Z0) = (q0, X Z0)           | 1 PUSH                    | Z0 [ 5 ]
+2    | d(q0, +, X) = RECHAZO               | ERROR                     | Z0 [ 5 ]
+```
+
+#### 2. **`resultado_<nombre>.txt`**
+
+- **Si la evaluación es exitosa**: Muestra el resultado numérico final.
+```text
+  Resultado: 15
+```
+
+- **Si ocurre un error**: Detalla el tipo de error (sintáctico o aritmético).
+```text
+  ERROR SINTACTICO: Operandos insuficientes para el operador '+'
+```
+```text
+  ERROR ARITMETICO: Division por cero
+```
+
+---
+
+## Instalación y uso
+
+Para instrucciones detalladas de compilación, instalación de dependencias y ejemplos de uso, consulta el [README técnico del evaluador](RPN-CALCULATOR/README.md).
+
+**Compilación rápida:**
+```bash
+cd RPN-CALCULATOR
+make
+```
+
+**Ejecución en modo consola:**
+```bash
+./rpn_calculator
+```
+
+**Ejecución en modo archivo:**
+```bash
+./rpn_calculator entrada.txt
+```
+
+---
+
 ## Herramientas usadas
-- Lenguaje de programación: C.
-- Modelo teórico: **Autómata de Pila**, aplicado a la evaluación de expresiones en notación postfija.
+
+- **Lenguaje de programación**: C
+- **Modelo teórico**: Autómata de Pila (Pushdown Automaton)
+- **Estructura de datos**: Pila estática (LIFO)
+- **Build system**: Make
+
+---
+
 ## Licencia
-Este proyecto se distribuye bajo la **Licencia MIT**.
+
+Este proyecto se distribuye bajo la **Licencia MIT**.  
 Consulta el archivo `LICENSE` para más detalles.
