@@ -14,11 +14,27 @@ Este proyecto consiste en un evaluador de expresiones matemáticas que utiliza u
 
 El sistema está diseñado para ser **versátil**, permitiendo al usuario trabajar tanto de forma interactiva (modo consola) como por lotes (modo archivo), generando siempre archivos de trazabilidad que registran cada paso de la evaluación.
 
+### 🔄 Autómata de Pila
+
+El evaluador implementa un **Autómata de Pila Determinista (APD)** con las siguientes características:
+
+* **Estado único:** `q0` (el autómata permanece siempre en este estado)
+* **Símbolo inicial de pila:** `Z0` (marcador de fondo de pila)
+* **Alfabeto de entrada:** Dígitos (0-9), operadores (+, -, *, /) y símbolo de fin (=)
+* **Transiciones del autómata:**
+  * `d(q0, ε, Z0) = (q0, Z0)` - Inicialización
+  * `d(q0, número, Z0) = (q0, X Z0)` - Primer número apilado
+  * `d(q0, número, X) = (q0, XX)` - Apilar números subsecuentes
+  * `d(q0, operador, XX) = (q0, X)` - Desapilar 2, operar, apilar resultado
+  * `d(q0, ε, X Z0) = (q0, ε)` - Estado de aceptación (un solo resultado)
+
+**Condición de aceptación:** La pila debe contener exactamente un elemento al finalizar (el resultado).
+
 ## ✨ Características Principales
 
 * **Arquitectura Modular:** Código separado en lógica de pila (`stack`), utilidades (`utils`) y programa principal (`main`).
 * **Doble Modo de Operación:** Modo consola interactivo y modo archivo por lotes.
-* **Trazabilidad Completa:** Genera archivos de evolución mostrando el estado de la pila paso a paso.
+* **Trazabilidad Completa:** Genera archivos de evolución mostrando el estado de la pila paso a paso con las **transiciones del autómata**.
 * **Formato Inteligente:** Muestra decimales solo cuando es necesario (ej: muestra `5` en lugar de `5.000000` y `2.5` si hay decimales).
 * **Manejo de Errores Estricto:** Sistema de validación que detecta y reporta:
   * División por cero.
@@ -131,7 +147,7 @@ Ejecuta el programa sin argumentos para el modo interactivo token por token:
 * **NO muestra la pila en pantalla durante la ejecución** (solo genera archivos)
 * Genera archivos de trazabilidad automáticamente con ID aleatorio:
   * `resultado_manual_XXXX.txt`: Resultado final o mensaje de error
-  * `evolucion_manual_XXXX.txt`: Traza completa paso a paso
+  * `evolucion_manual_XXXX.txt`: Traza completa paso a paso con **transiciones del autómata**
 * Termina la sesión ingresando `=`
 * Al finalizar exitosamente, muestra en pantalla la ubicación de los archivos generados
 
@@ -155,7 +171,7 @@ Ejecuta el programa con un archivo de entrada:
 * El archivo debe terminar con el símbolo `=`
 * Genera dos archivos de salida:
   * `resultado_<nombre_archivo>.txt`: Resultado final o mensaje de error
-  * `evolucion_<nombre_archivo>.txt`: Traza paso a paso del procesamiento
+  * `evolucion_<nombre_archivo>.txt`: Traza paso a paso del procesamiento con **transiciones del autómata**
 * **Modo silencioso**: Solo muestra mensaje de confirmación al finalizar exitosamente
 
 ### 5. Limpieza (Opcional)
@@ -174,8 +190,7 @@ Así se ve una interacción real para calcular la operación `(5 + 3) * 2`:
 
 ```text
 ------ MODO CONSOLA ------
-Ingrese operacion y presione ENTER.
-Escribe '=' para terminar.
+Ingrese operacion (ej: 5 3 +) y '=' para terminar.
 --------------------------
 > 5
 > 3
@@ -191,15 +206,15 @@ Exito. Archivos generados:
 
 **Contenido de `evolucion_manual_3847.txt`:**
 ```text
-ENTRADA    =>   ESTADO DE LA PILA
----------------------------------
-(Inicio)   =>   [ vacia ]
-5          =>   [ 5 ]
-3          =>   [ 5 3 ]
-+          =>   [ 8 ]
-2          =>   [ 8 2 ]
-*          =>   [ 16 ]
-(Fin)      =>   [ACEPTADO]
+PASO | TRANSICION                          | DESCRIPCION               | PILA
+-----|-------------------------------------|---------------------------|------------------
+0    | d(q0, e, Z0) = (q0, Z0)             | INICIO                    | Z0 [ vacia ]
+1    | d(q0, 5, Z0) = (q0, X Z0)           | 1 PUSH                    | Z0 [ 5 ]
+2    | d(q0, 3, X) = (q0, XX)              | 1 PUSH                    | Z0 [ 5 3 ]
+3    | d(q0, +, XX) = (q0, X)              | 2 POP Y 1 PUSH            | Z0 [ 8 ]
+4    | d(q0, 2, X) = (q0, XX)              | 1 PUSH                    | Z0 [ 8 2 ]
+5    | d(q0, *, XX) = (q0, X)              | 2 POP Y 1 PUSH            | Z0 [ 16 ]
+6    | d(q0, e, X Z0) = (q0, e)            | ACEPTACION                | Z0 [ 16 ]
 ```
 
 **Contenido de `resultado_manual_3847.txt`:**
@@ -221,20 +236,22 @@ Resultado: 16
 
 **Salida en pantalla:**
 ```text
-Exito. Archivos generados: resultado_expresion.txt y evolucion_expresion.txt
+Exito. Archivos generados:
+ -> resultado_expresion.txt
+ -> evolucion_expresion.txt
 ```
 
 **Contenido de `evolucion_expresion.txt`:**
 ```text
-ENTRADA    =>   ESTADO DE LA PILA
----------------------------------
-(Inicio)   =>   [ vacia ]
-10         =>   [ 10 ]
-5          =>   [ 10 5 ]
-+          =>   [ 15 ]
-2          =>   [ 15 2 ]
-*          =>   [ 30 ]
-(Fin)      =>   [ACEPTADO]
+PASO | TRANSICION                          | DESCRIPCION               | PILA
+-----|-------------------------------------|---------------------------|------------------
+0    | d(q0, e, Z0) = (q0, Z0)             | INICIO                    | Z0 [ vacia ]
+1    | d(q0, 10, Z0) = (q0, X Z0)          | 1 PUSH                    | Z0 [ 10 ]
+2    | d(q0, 5, X) = (q0, XX)              | 1 PUSH                    | Z0 [ 10 5 ]
+3    | d(q0, +, XX) = (q0, X)              | 2 POP Y 1 PUSH            | Z0 [ 15 ]
+4    | d(q0, 2, X) = (q0, XX)              | 1 PUSH                    | Z0 [ 15 2 ]
+5    | d(q0, *, XX) = (q0, X)              | 2 POP Y 1 PUSH            | Z0 [ 30 ]
+6    | d(q0, e, X Z0) = (q0, e)            | ACEPTACION                | Z0 [ 30 ]
 ```
 
 **Contenido de `resultado_expresion.txt`:**
@@ -247,13 +264,46 @@ Resultado: 30
 * **Lenguaje C:** Gestión de memoria estática y manejo de archivos.
 * **Make:** Automatización de compilación.
 * **Estructuras de Datos:** Implementación manual de Pila estática (LIFO) con array de tamaño fijo.
+* **Teoría de Autómatas:** Autómata de Pila Determinista (APD) para validación sintáctica.
 
 ## 📋 Detalles de Implementación
+
+### Autómata de Pila (Pushdown Automaton)
+
+El evaluador implementa un autómata de pila con las siguientes características formales:
+
+**Definición:** M = (Q, Σ, Γ, δ, q0, Z0, F)
+
+* **Q** = {q0} - Conjunto de estados (estado único)
+* **Σ** = {0-9, +, -, *, /, =} - Alfabeto de entrada
+* **Γ** = {Z0, X} - Alfabeto de pila (Z0 = marcador, X = cualquier número)
+* **δ** - Función de transición (ver tabla de transiciones)
+* **q0** - Estado inicial
+* **Z0** - Símbolo inicial de pila
+* **F** = {q0 con pila = X Z0} - Estados de aceptación
+
+**Tabla de Transiciones:**
+
+| Transición | Condición | Acción |
+|------------|-----------|--------|
+| d(q0, ε, Z0) = (q0, Z0) | Inicio | Inicializar pila con Z0 |
+| d(q0, número, Z0) = (q0, X Z0) | Pila vacía | Apilar primer número |
+| d(q0, número, X) = (q0, XX) | Pila con elementos | Apilar número adicional |
+| d(q0, +, XX) = (q0, X) | Operador suma | Desapilar 2, sumar, apilar resultado |
+| d(q0, -, XX) = (q0, X) | Operador resta | Desapilar 2, restar, apilar resultado |
+| d(q0, *, XX) = (q0, X) | Operador multiplicación | Desapilar 2, multiplicar, apilar resultado |
+| d(q0, /, XX) = (q0, X) | Operador división | Desapilar 2, dividir, apilar resultado |
+| d(q0, ε, X Z0) = (q0, ε) | Fin de entrada | ACEPTAR (1 elemento) |
 
 ### Pila (Stack)
 * **Capacidad:** 100 elementos (definida por `MAX_STACK_SIZE`)
 * **Tipo:** Array estático de `double`
 * **Índice:** Variable `top` inicializada en -1 (indica pila vacía)
+* **Operaciones:**
+  * `push(value)` - Apilar elemento (O(1))
+  * `pop()` - Desapilar elemento (O(1))
+  * `get_stack_size()` - Obtener tamaño (O(1))
+  * `get_top_value()` - Ver tope sin desapilar (O(1))
 
 ### Operadores Soportados
 * Suma: `+`
@@ -263,15 +313,20 @@ Resultado: 30
 
 ### Validaciones Implementadas
 1. **Símbolos inválidos:** Verifica que cada token sea un número válido o un operador
-2. **Operandos insuficientes:** Verifica que haya al menos 2 números antes de operar
+2. **Operandos insuficientes:** Verifica que haya al menos 2 números antes de operar (validación de transición XX)
 3. **División por cero:** Validación explícita antes de dividir
 4. **Desbordamiento de pila:** Verifica límite de 100 elementos
-5. **Verificación final:** Debe quedar exactamente 1 elemento en la pila
+5. **Verificación final:** Debe quedar exactamente 1 elemento en la pila (condición de aceptación X Z0)
 
 ### Manejo de Errores
 Todos los errores usan el sistema **fail-fast** (`exit(1)`), escribiendo el error en:
 * Archivo de resultado (mensaje de error)
-* Archivo de evolución (marcador `[RECHAZADO]`)
+* Archivo de evolución (marcador de `RECHAZO` con la transición fallida)
+
+**Tipos de errores detectados:**
+* **ERROR SINTÁCTICO:** Token inválido, operandos insuficientes, expresión incompleta, pila vacía
+* **ERROR ARITMÉTICO:** División por cero
+* **ERROR FATAL:** Desbordamiento de pila (Stack Overflow)
 
 <div align="center">
   🪄 Desarrollado por grupo 2
