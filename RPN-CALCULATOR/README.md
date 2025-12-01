@@ -1,5 +1,5 @@
 # 🧮 EVALUADOR Y VALIDADOR POSTFIJO
->
+
 > Una implementación robusta, modular y eficiente de una calculadora de **Notación Polaca Inversa (Reverse Polish Notation)** escrita en **C**.
 
 ![Language](https://img.shields.io/badge/Lenguaje-C-00599C?style=flat-square&logo=c&logoColor=white)
@@ -43,13 +43,15 @@ El evaluador implementa un **Autómata de Pila Determinista (APD)** con las sigu
   * Insuficiencia de operandos.
   * Expresión incompleta (sobran números en la pila).
   * Pila vacía al finalizar.
+* **Sistema de Archivos de Salida:** 
+  * **`evolucion_<nombre>.txt`**: Trazabilidad completa paso a paso.
+  * **`resultado_<nombre>.txt`**: Resultado numérico o descripción detallada del error.
 
 ---
 
 ## 📂 Estructura del Proyecto
 
 El código sigue una estructura estándar de la industria para facilitar su mantenimiento y escalabilidad:
-
 ```text
 RPN-CALCULATOR/
 ├── include/        # Archivos de cabecera (.h)
@@ -70,7 +72,6 @@ Sigue estos pasos para configurar el entorno y ejecutar el proyecto en tu sistem
 ### 1. Comprobación de Prerrequisitos
 
 Antes de instalar nada, verifica si ya tienes las herramientas necesarias. Abre tu terminal (PowerShell en Windows o Terminal en Linux) y ejecuta:
-
 ```bash
 gcc --version
 make --version
@@ -85,7 +86,6 @@ make --version
 #### 🐧 Opción A: Linux (Ubuntu/Debian)
 
 La forma más rápida es instalar el paquete esencial de construcción:
-
 ```bash
 sudo apt update
 sudo apt install build-essential
@@ -98,7 +98,6 @@ Esto instalará automáticamente `gcc` y `make`.
 Para compilar C en Windows de manera profesional, recomendamos usar **MSYS2** o **MinGW**.
 
 **Método Rápido (vía Chocolatey)**: Si tienes Chocolatey instalado, abre PowerShell como Administrador y ejecuta:
-
 ```PowerShell
 choco install make mingw
 ```
@@ -115,8 +114,8 @@ choco install make mingw
 Una vez que tengas las dependencias, compilar el proyecto es automático gracias al archivo `Makefile`.
 
 Abre la terminal en la carpeta `RPN-CALCULATOR`
-Ejecuta el comando de compilación:
 
+Ejecuta el comando de compilación:
 ```Bash
 make
 ```
@@ -132,13 +131,11 @@ Una vez compilado, se generará el ejecutable. El programa soporta **dos modos d
 Ejecuta el programa sin argumentos para el modo interactivo token por token:
 
 **En Linux / Mac / Git Bash:**
-
 ```bash
 ./rpn_calculator
 ```
 
 **En Windows (CMD / PowerShell):**
-
 ```PowerShell
 .\rpn_calculator.exe
 ```
@@ -146,8 +143,8 @@ Ejecuta el programa sin argumentos para el modo interactivo token por token:
 * Permite ingresar tokens uno a uno (números y operadores)
 * **NO muestra la pila en pantalla durante la ejecución** (solo genera archivos)
 * Genera archivos de trazabilidad automáticamente con ID aleatorio:
-  * `resultado_manual_XXXX.txt`: Resultado final o mensaje de error
   * `evolucion_manual_XXXX.txt`: Traza completa paso a paso con **transiciones del autómata**
+  * `resultado_manual_XXXX.txt`: Resultado final o mensaje de error
 * Termina la sesión ingresando `=`
 * Al finalizar exitosamente, muestra en pantalla la ubicación de los archivos generados
 
@@ -156,13 +153,11 @@ Ejecuta el programa sin argumentos para el modo interactivo token por token:
 Ejecuta el programa con un archivo de entrada:
 
 **En Linux / Mac / Git Bash:**
-
 ```bash
 ./rpn_calculator entrada.txt
 ```
 
 **En Windows (CMD / PowerShell):**
-
 ```PowerShell
 .\rpn_calculator.exe entrada.txt
 ```
@@ -170,14 +165,13 @@ Ejecuta el programa con un archivo de entrada:
 * Lee la expresión completa desde el archivo (tokens separados por espacios)
 * El archivo debe terminar con el símbolo `=`
 * Genera dos archivos de salida:
-  * `resultado_<nombre_archivo>.txt`: Resultado final o mensaje de error
   * `evolucion_<nombre_archivo>.txt`: Traza paso a paso del procesamiento con **transiciones del autómata**
+  * `resultado_<nombre_archivo>.txt`: Resultado final o mensaje de error detallado
 * **Modo silencioso**: Solo muestra mensaje de confirmación al finalizar exitosamente
 
 ### 5. Limpieza (Opcional)
 
 Para eliminar los archivos objeto (`.o`) y el ejecutable generado:
-
 ```Bash
 make clean
 ```
@@ -187,7 +181,6 @@ make clean
 ### Modo Consola
 
 Así se ve una interacción real para calcular la operación `(5 + 3) * 2`:
-
 ```text
 ------ MODO CONSOLA ------
 Ingrese operacion (ej: 5 3 +) y '=' para terminar.
@@ -200,8 +193,8 @@ Ingrese operacion (ej: 5 3 +) y '=' para terminar.
 > =
 
 Exito. Archivos generados:
- -> resultado_manual_3847.txt
  -> evolucion_manual_3847.txt
+ -> resultado_manual_3847.txt
 ```
 
 **Contenido de `evolucion_manual_3847.txt`:**
@@ -237,8 +230,8 @@ Resultado: 16
 **Salida en pantalla:**
 ```text
 Exito. Archivos generados:
- -> resultado_expresion.txt
  -> evolucion_expresion.txt
+ -> resultado_expresion.txt
 ```
 
 **Contenido de `evolucion_expresion.txt`:**
@@ -257,6 +250,28 @@ PASO | TRANSICION                          | DESCRIPCION               | PILA
 **Contenido de `resultado_expresion.txt`:**
 ```text
 Resultado: 30
+```
+
+### Ejemplo con Error
+
+**Contenido de `error.txt`:**
+```text
+5 0 / =
+```
+
+**Contenido de `evolucion_error.txt`:**
+```text
+PASO | TRANSICION                          | DESCRIPCION               | PILA
+-----|-------------------------------------|---------------------------|------------------
+0    | d(q0, e, Z0) = (q0, Z0)             | INICIO                    | Z0 [ vacia ]
+1    | d(q0, 5, Z0) = (q0, X Z0)           | 1 PUSH                    | Z0 [ 5 ]
+2    | d(q0, 0, X) = (q0, XX)              | 1 PUSH                    | Z0 [ 5 0 ]
+3    | d(q0, /, XX) = RECHAZO              | ERROR                     | Z0 [ 5 0 ]
+```
+
+**Contenido de `resultado_error.txt`:**
+```text
+ERROR ARITMETICO: Division por cero
 ```
 
 ## 🛠️ Tecnologías Utilizadas
@@ -319,14 +334,33 @@ El evaluador implementa un autómata de pila con las siguientes características
 5. **Verificación final:** Debe quedar exactamente 1 elemento en la pila (condición de aceptación X Z0)
 
 ### Manejo de Errores
+
 Todos los errores usan el sistema **fail-fast** (`exit(1)`), escribiendo el error en:
-* Archivo de resultado (mensaje de error)
-* Archivo de evolución (marcador de `RECHAZO` con la transición fallida)
+* **Archivo de evolución** (`evolucion_<nombre>.txt`): Marca el paso donde ocurrió el error con la transición `RECHAZO`
+* **Archivo de resultado** (`resultado_<nombre>.txt`): Detalla el tipo y descripción del error
 
 **Tipos de errores detectados:**
 * **ERROR SINTÁCTICO:** Token inválido, operandos insuficientes, expresión incompleta, pila vacía
 * **ERROR ARITMÉTICO:** División por cero
 * **ERROR FATAL:** Desbordamiento de pila (Stack Overflow)
+
+### Sistema de Archivos de Salida
+
+El programa **siempre** genera dos archivos independientemente del resultado:
+
+#### Archivo de Evolución (`evolucion_<nombre>.txt`)
+Documenta cada paso del procesamiento incluyendo:
+- Número de paso secuencial
+- Transición del autómata aplicada
+- Descripción de la operación realizada
+- Estado completo de la pila después de la operación
+
+En caso de error, el último paso mostrará la transición `RECHAZO`.
+
+#### Archivo de Resultado (`resultado_<nombre>.txt`)
+Contiene:
+- **En caso de éxito:** El resultado numérico final precedido por "Resultado: "
+- **En caso de error:** El tipo de error (SINTÁCTICO/ARITMÉTICO/FATAL) seguido de la descripción específica
 
 <div align="center">
   🪄 Desarrollado por grupo 2
