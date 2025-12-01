@@ -34,8 +34,8 @@ void modo_archivo(char *nombre_entrada) {
 
         if (is_operator(token)) {
             if (get_stack_size() < 2) {
-                fprintf(f_res, "ERROR: Faltan operandos para operar '%s'.", token);
-                fprintf(f_evo, "%-10s =>   [RECHAZADO: Faltan operandos]\n", token);
+                fprintf(f_res, "ERROR SINTACTICO: Faltan operandos para operar '%s'.", token);
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: ERROR SINTACTICO - Faltan operandos]\n", token);
                 exit(1);
             }
             double op2 = pop();
@@ -47,8 +47,8 @@ void modo_archivo(char *nombre_entrada) {
             else if (strcmp(token, "*") == 0) res = op1 * op2;
             else if (strcmp(token, "/") == 0) {
                 if (op2 == 0) {
-                    fprintf(f_res, "ERROR: Division por cero.");
-                    fprintf(f_evo, "%-10s =>   [RECHAZADO: Division por 0]\n", token);
+                    fprintf(f_res, "ERROR ARITMETICO: Division por cero.");
+                    fprintf(f_evo, "%-10s =>   [RECHAZADO: ERROR ARITMETICO - Division por 0]\n", token);
                     exit(1);
                 }
                 res = op1 / op2;
@@ -63,8 +63,8 @@ void modo_archivo(char *nombre_entrada) {
             char *endptr;
             double value = strtod(token, &endptr);
             if (*endptr != '\0') {
-                fprintf(f_res, "ERROR: Simbolo invalido.");
-                fprintf(f_evo, "%-10s =>   [RECHAZADO: Simbolo invalido]\n", token);
+                fprintf(f_res, "ERROR SINTACTICO: Simbolo invalido '%s'.", token);
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: ERROR SINTACTICO - Simbolo invalido]\n", token);
                 exit(1);
             }
             push(value);
@@ -77,18 +77,18 @@ void modo_archivo(char *nombre_entrada) {
 
     int size = get_stack_size();
     if (size == 1) {
-        printf("Exito. Archivos generados: %s y %s\n", nombre_res, nombre_evo);
+        printf("Exito. Archivos generados:\n -> %s\n -> %s\n", nombre_res, nombre_evo);
         fprintf(f_res, "Resultado: ");
         print_formatted_file(f_res, get_top_value());
         fprintf(f_res, "\n");
         fprintf(f_evo, "(Fin)      =>   [ACEPTADO]\n");
     } else if (size == 0) {
-        fprintf(f_res, "ERROR: Pila vacia.");
-        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Pila vacia]\n");
+        fprintf(f_res, "ERROR SINTACTICO: Pila vacia.");
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: ERROR SINTACTICO - Pila vacia]\n");
         exit(1);
     } else {
-        fprintf(f_res, "ERROR: Expresion incompleta (Sobran %d numeros).", size);
-        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Sobran numeros]\n");
+        fprintf(f_res, "ERROR SINTACTICO: Expresion incompleta (Sobran %d numeros).", size);
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: ERROR SINTACTICO - Sobran numeros]\n");
         exit(1);
     }
 
@@ -110,8 +110,7 @@ void modo_consola() {
     FILE *f_evo = fopen(nombre_evo, "w");
 
     printf("------ MODO CONSOLA ------\n");
-    printf("Ingrese operacion y presione ENTER.\n");
-    printf("Escribe '=' para terminar.\n");
+    printf("Ingrese operacion (ej: 5 3 +) y '=' para terminar.\n");
     printf("--------------------------\n");
 
     fprintf(f_evo, "ENTRADA    =>   ESTADO DE LA PILA\n");
@@ -129,9 +128,8 @@ void modo_consola() {
 
         if (is_operator(token)) {
             if (get_stack_size() < 2) {
-                // Solo guardamos en archivo y salimos
-                fprintf(f_res, "ERROR: Faltan operandos.");
-                fprintf(f_evo, "%-10s =>   [RECHAZADO: Faltan operandos]\n", token);
+                fprintf(f_res, "ERROR SINTACTICO: Faltan operandos para operar '%s'.", token);
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: ERROR SINTACTICO - Faltan operandos]\n", token);
                 exit(1);
             }
             double op2 = pop();
@@ -143,8 +141,8 @@ void modo_consola() {
             else if (strcmp(token, "*") == 0) res = op1 * op2;
             else if (strcmp(token, "/") == 0) {
                 if (op2 == 0) {
-                    fprintf(f_res, "ERROR: Division por cero.");
-                    fprintf(f_evo, "%-10s =>   [RECHAZADO: Division por 0]\n", token);
+                    fprintf(f_res, "ERROR ARITMETICO: Division por cero.");
+                    fprintf(f_evo, "%-10s =>   [RECHAZADO: ERROR ARITMETICO - Division por 0]\n", token);
                     exit(1);
                 }
                 res = op1 / op2;
@@ -159,8 +157,8 @@ void modo_consola() {
             char *endptr;
             double value = strtod(token, &endptr);
             if (*endptr != '\0') {
-                fprintf(f_res, "ERROR: Simbolo invalido.");
-                fprintf(f_evo, "%-10s =>   [RECHAZADO: Simbolo invalido]\n", token);
+                fprintf(f_res, "ERROR SINTACTICO: Simbolo invalido '%s'.", token);
+                fprintf(f_evo, "%-10s =>   [RECHAZADO: ERROR SINTACTICO - Simbolo invalido]\n", token);
                 exit(1);
             }
             push(value);
@@ -180,12 +178,12 @@ void modo_consola() {
         fprintf(f_res, "\n");
         fprintf(f_evo, "(Fin)      =>   [ACEPTADO]\n");
     } else if (size == 0) {
-        fprintf(f_res, "ERROR: Pila vacia.");
-        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Pila vacia]\n");
+        fprintf(f_res, "ERROR SINTACTICO: Pila vacia.");
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: ERROR SINTACTICO - Pila vacia]\n");
         exit(1);
     } else {
-        fprintf(f_res, "ERROR: Expresion incompleta.");
-        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: Sobran numeros]\n");
+        fprintf(f_res, "ERROR SINTACTICO: Expresion incompleta (Sobran %d numeros).", size);
+        fprintf(f_evo, "(Fin)      =>   [RECHAZADO: ERROR SINTACTICO - Sobran numeros]\n");
         exit(1);
     }
 
